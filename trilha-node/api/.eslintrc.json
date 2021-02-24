@@ -20,7 +20,14 @@
         "tabWidth": 2
       }
     ],
-    "no-console": "off"
+    "no-console": "off",
+    "import/extensions": [
+      "error",
+      {
+        "ts": "never"
+      }
+    ],
+    "class-methods-use-this": ["enabled", { "exceptMethods": ["up", "down"] }]
   },
   "settings": {
     "import/resolver": {
