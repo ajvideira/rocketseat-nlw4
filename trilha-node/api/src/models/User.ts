@@ -5,16 +5,16 @@ import { v4 as uuid } from 'uuid';
 export default class User {
   @Column()
   @PrimaryColumn()
-  id: string;
+  public id: string;
 
   @Column()
-  name: string;
+  public name: string;
 
   @Column()
-  email: string;
+  public email: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  @CreateDateColumn()
+  public created_at: Date;
 
   constructor() {
     if (!this.id) {

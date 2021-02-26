@@ -5,16 +5,16 @@ import { v4 as uuid } from 'uuid';
 export default class Survey {
   @Column()
   @PrimaryColumn()
-  id: string;
+  public id: string;
 
   @Column()
-  title: string;
+  public title: string;
 
   @Column()
-  description: string;
+  public description: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  @CreateDateColumn()
+  public created_at: Date;
 
   constructor() {
     if (!this.id) {
