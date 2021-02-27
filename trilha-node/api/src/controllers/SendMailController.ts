@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
 import path from 'path';
 import { getCustomRepository } from 'typeorm';
+import AppError from '../errors/AppError';
 import SurveyRepository from '../repositories/SurveyRepository';
 import UserRepository from '../repositories/UserRepository';
 import UserSurveyRepository from '../repositories/UserSurveyRepository';
 import SendMailService from '../services/SendMailService';
 
 export default class SendMailController {
-  async execute(request: Request, response: Response) {
+  async send(request: Request, response: Response) {
     const { email, survey_id } = request.body;
 
     const userRepository = getCustomRepository(UserRepository);
@@ -16,12 +17,12 @@ export default class SendMailController {
 
     const user = await userRepository.findOne({ email });
     if (!user) {
-      return response.status(400).json({ error: 'User does not exists!' });
+      throw new AppError('User does not exists.');
     }
 
     const survey = await surveyRepository.findOne({ id: survey_id });
     if (!survey) {
-      return response.status(400).json({ error: 'Survey does not exists!' });
+      throw new AppError('Survey does not exists.');
     }
 
     let userSurvey = await userSurveyRepository.findOne({
@@ -30,7 +31,7 @@ export default class SendMailController {
     });
 
     if (userSurvey && userSurvey.value) {
-      return response.status(400).json({ error: 'User has already completed the survey!' });
+      throw new AppError('User has already completed the survey.');
     }
 
     if (!userSurvey) {
@@ -44,8 +45,7 @@ export default class SendMailController {
       name: user.name,
       title: survey.title,
       description: survey.description,
-      user_id: user.id,
-      survey_id: survey.id,
+      id: userSurvey.id,
       link: process.env.MAIL_URL,
     };
 

@@ -1,17 +1,16 @@
-import app from '../app';
 import request from 'supertest';
-
+import { getConnection } from 'typeorm';
+import app from '../app';
 import createConnection from '../database/connection';
-import { Connection } from 'typeorm';
 
-describe('Surveys', () => {
-  let connection: Connection = null;
-
+describe('Users', () => {
   beforeAll(async () => {
-    connection = await createConnection();
+    const connection = await createConnection();
     await connection.runMigrations();
   });
   afterAll(async () => {
+    const connection = getConnection();
+    await connection.dropDatabase();
     await connection.close();
   });
 
