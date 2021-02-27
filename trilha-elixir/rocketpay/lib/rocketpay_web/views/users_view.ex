@@ -1,14 +1,26 @@
 defmodule RocketpayWeb.UsersView do
-  alias Rocketpay.User
+  alias Rocketpay.{Account, User}
 
-  def render("create.json", %{user: %User{id: id, name: name, email: email, nickname: nickname}}) do
+  def render("create.json", %{
+        user: %User{
+          id: id,
+          name: name,
+          email: email,
+          nickname: nickname,
+          account: %Account{id: account_id, balance: balance}
+        }
+      }) do
     %{
       message: "User created",
       user: %{
         id: id,
         name: name,
         email: email,
-        nickname: nickname
+        nickname: nickname,
+        account: %{
+          id: account_id,
+          balance: balance
+        }
       }
     }
   end
