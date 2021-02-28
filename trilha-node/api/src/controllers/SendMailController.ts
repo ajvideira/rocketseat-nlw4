@@ -49,8 +49,8 @@ export default class SendMailController {
       link: process.env.MAIL_URL,
     };
 
-    await SendMailService.execute(email, survey.title, variables, filePath);
+    const url = await SendMailService.execute(email, survey.title, variables, filePath);
 
-    return response.status(201).json(userSurvey);
+    return response.status(200).json({ userSurvey, url });
   }
 }

@@ -6,23 +6,24 @@ import handlebars from 'handlebars';
 class SendMailService {
   private client: Transporter;
 
-  constructor() {
-    nodemailer.createTestAccount().then((account) => {
-      const transporter = nodemailer.createTransport({
-        host: account.smtp.host,
-        port: account.smtp.port,
-        secure: account.smtp.secure,
-        auth: {
-          user: account.user,
-          pass: account.pass,
-        },
-      });
-
-      this.client = transporter;
+  async createClient() {
+    const account = await nodemailer.createTestAccount();
+    this.client = nodemailer.createTransport({
+      host: account.smtp.host,
+      port: account.smtp.port,
+      secure: account.smtp.secure,
+      auth: {
+        user: account.user,
+        pass: account.pass,
+      },
     });
   }
 
   async execute(to: string, subject: string, variables: object, filePath: string) {
+    if (!this.client) {
+      await this.createClient();
+    }
+
     const fileContent = fs.readFileSync(filePath).toString('utf-8');
 
     const mailTemplateParse = handlebars.compile(fileContent);
@@ -36,8 +37,7 @@ class SendMailService {
       from: 'NPS <noreply@nps.com.br',
     });
 
-    console.log('Message sent: %s', message.messageId);
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(message));
+    return nodemailer.getTestMessageUrl(message);
   }
 }
 
